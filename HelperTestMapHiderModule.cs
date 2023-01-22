@@ -1,32 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 
-namespace Celeste.Mod.HelperTestMapHider {
-    public class HelperTestMapHiderModule : EverestModule
+namespace Celeste.Mod.HelperTestMapHider; 
+
+// ReSharper disable once UnusedType.Global
+public class HelperTestMapHiderModule : EverestModule
+{
+
+    public static List<string> helpers = new List<string> {"AltSidesHelper", "BounceHelper", "CustomPoints", "HonlyHelper", "JackalHelper", "SusanHelper"};
+    public override void Load()
     {
-
-        public static List<string> helpers = new List<string> {"BounceHelper", "CustomPoints", "HonlyHelper", "JackalHelper"};
-        public override void Load()
-        {
-            On.Celeste.Mod.Everest.Content.TryAdd += OnTryAdd;
-        }
-
-        public override void Unload()
-        {
-            On.Celeste.Mod.Everest.Content.TryAdd -= OnTryAdd;
-        }
-
-        private static bool OnTryAdd(On.Celeste.Mod.Everest.Content.orig_TryAdd orig, string path, ModAsset metadata)
-        {
-            var cleanPath = path.Replace('\\', '/');
-
-            if (helpers.Contains(metadata.Source.Name) && cleanPath.StartsWith("/Maps/"))
-            {
-                return false;
-            }
-
-            return orig(path, metadata);
-        }
-
+        IL.Celeste.AreaData.Load += HookAreaDataLoad;
     }
+
+    public override void Unload()
+    {
+        IL.Celeste.AreaData.Load -= HookAreaDataLoad;
+    }
+
+    private static bool IsFromHelpers(ModAsset asset)
+    {
+        return helpers.Contains(asset?.Source?.Name);
+    }
+
+    private static void HookAreaDataLoad(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+        int i = 0;
+        if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdloc(out i),
+                instr => instr.MatchLdfld<ModAsset>("PathVirtual"))
+            && cursor.TryGotoPrev(MoveType.After, instr => instr.MatchStloc(i)))
+        {
+            cursor.Emit(OpCodes.Ldloc, i);
+            cursor.EmitDelegate(IsFromHelpers);
+            ILLabel target = cursor.DefineLabel();
+            cursor.Emit(OpCodes.Brtrue, target);
+            cursor.GotoNext(MoveType.After ,instr => instr.MatchStfld<AreaData>("OnLevelBegin")).MarkLabel(target);
+        }
+    }
+
 }

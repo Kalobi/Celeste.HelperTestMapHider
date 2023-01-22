@@ -2,10 +2,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452</TargetFrameworks>
+    <TargetFramework>net452</TargetFramework>
     <AssemblyName>HelperTestMapHider</AssemblyName>
     <RootNamespace>Celeste.Mod.HelperTestMapHider</RootNamespace>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>11</LangVersion>
     <CelesteGamePath Condition="'$(CELESTEGAMEPATH)' == ''">..\..</CelesteGamePath>
   </PropertyGroup>
 
