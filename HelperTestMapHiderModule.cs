@@ -5,27 +5,22 @@ using MonoMod.Cil;
 namespace Celeste.Mod.HelperTestMapHider; 
 
 // ReSharper disable once UnusedType.Global
-public class HelperTestMapHiderModule : EverestModule
-{
+public class HelperTestMapHiderModule : EverestModule {
 
-    public static List<string> helpers = new List<string> {"AltSidesHelper", "BounceHelper", "CustomPoints", "HonlyHelper", "JackalHelper", "SusanHelper"};
-    public override void Load()
-    {
+    public static List<string> helpers = new List<string> {"AltSidesHelper", "bitsbolts", "BounceHelper", "CustomPoints", "HonlyHelper", "JackalHelper", "SusanHelper"};
+    public override void Load() {
         IL.Celeste.AreaData.Load += HookAreaDataLoad;
     }
 
-    public override void Unload()
-    {
+    public override void Unload() {
         IL.Celeste.AreaData.Load -= HookAreaDataLoad;
     }
 
-    private static bool IsFromHelpers(ModAsset asset)
-    {
+    private static bool IsFromHelpers(ModAsset asset) {
         return helpers.Contains(asset?.Source?.Name);
     }
 
-    private static void HookAreaDataLoad(ILContext il)
-    {
+    private static void HookAreaDataLoad(ILContext il) {
         ILCursor cursor = new ILCursor(il);
         int i = 0;
         if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdloc(out i),

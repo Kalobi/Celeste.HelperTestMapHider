@@ -1,9 +1,9 @@
 ﻿- Name: HelperTestMapHider
-  Version: 1.0.2
+  Version: 1.0.3
   DLL: HelperTestMapHider.dll
   Dependencies:
     - Name: Everest
-      Version: 1.3205.0
+      Version: 1.4107.0
   OptionalDependencies:
     - Name: FancyTileEntities
       Version: 1.6.2
