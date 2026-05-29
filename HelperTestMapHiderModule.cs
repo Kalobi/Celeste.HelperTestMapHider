@@ -7,7 +7,7 @@ namespace Celeste.Mod.HelperTestMapHider;
 // ReSharper disable once UnusedType.Global
 public class HelperTestMapHiderModule : EverestModule {
 
-    public static List<string> helpers = new List<string> {"AltSidesHelper", "bitsbolts", "BounceHelper", "CustomPoints", "HonlyHelper", "JackalHelper", "SusanHelper"};
+    private static readonly List<string> helpers = ["AltSidesHelper", "bitsbolts", "BounceHelper", "CustomPoints", "HonlyHelper", "JackalHelper", "SusanHelper", "minecirehelper", "Dax's Resources"];
     public override void Load() {
         IL.Celeste.AreaData.Load += HookAreaDataLoad;
     }
